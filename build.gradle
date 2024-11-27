@@ -1,0 +1,63 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.3.4'
+    id 'io.spring.dependency-management' version '1.1.6'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-web-services'
+
+    // JPA 사용을 위해 추가
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    // jWT
+    implementation("com.auth0:java-jwt:3.16.0")  // oauth0
+
+
+    // 로그 라이브러리 사용을 위해 추가
+    annotationProcessor("org.projectlombok:lombok")
+    compileOnly("org.projectlombok:lombok")
+
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+
+    // mysql 라이브러리
+    runtimeOnly 'com.mysql:mysql-connector-j'
+
+    implementation 'javax.validation:validation-api:2.0.1.Final' // 또는 최신 버전
+    implementation 'org.hibernate.validator:hibernate-validator:6.0.13.Final' // 또는 최신 버전
+
+    // 메일
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+    // Template 엔진
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'ognl:ognl:3.2.19'
+
+    // redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+
+
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
