@@ -40,13 +40,15 @@ public class SecurityConfiguration {
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 세션 관리 정책 설정
                 )
-//                .authorizeHttpRequests(auth ->
-//                        auth.requestMatchers("/").permitAll() // 특정 URL은 필터를 거치지 않음
-//                                .anyRequest().authenticated() // 나머지 모든 요청은 인증 필요
-//                )
                 .authorizeHttpRequests(auth ->
-                        auth.anyRequest().permitAll() // 모든 요청에 대해 인증 없이 허용
+                        auth
+                                .requestMatchers("/api/v1/auth/register", "/api/v1/auth/authenticate").permitAll() // 이 경로들은 인증 없이 접근 가능
+                                .anyRequest().authenticated() // 나머지 모든 요청은 인증 필요
                 )
+//
+//                .authorizeHttpRequests(auth ->
+//                        auth.anyRequest().permitAll() // 모든 요청에 대해 인증 없이 허용
+//                )
                 .addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class) // 로그인 필터 추가
                 .addFilterAt(checkFilter, BasicAuthenticationFilter.class); // JWT 검증 필터 추가
 

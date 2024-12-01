@@ -1,7 +1,10 @@
 package com.example.tradetrackeruser.service;
 
+import com.example.api.response.CustomException;
+import com.example.api.response.DefaultErrorCode;
 import com.example.tradetrackeruser.dto.EmailDto;
 import com.example.tradetrackeruser.repository.UserRepository;
+import com.example.tradetrackeruser.response.ErrorCode;
 import com.example.tradetrackeruser.util.RedisUtil;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -122,26 +125,37 @@ public class EmailService {
 
         String redisKey = purpose + ":" + email;
 
+        // Redis에서 코드 가져오기
         String codeFoundByEmail = redisUtil.getData(redisKey);
         log.info("code found by email: " + codeFoundByEmail);
 
-        // 코드가 없거나 다르면 실패
+        // 코드가 없거나 다르면 실패 처리
         if (codeFoundByEmail == null || !codeFoundByEmail.equals(code)) {
-            return false;
+            throw new CustomException(ErrorCode.INVALID_VERIFY_CODE); // 유효하지 않은 코드
         }
-
-        // 해당 이벤트가 발생하면
-        // -> varify : 사용자 찾아서 enable로 바꾸기
 
         // 이메일로 사용자 찾기
         Optional<User> optionalUser = userRepository.findUserByEmail(email);
 
-        // 사용자 존재하면 enabled 설정 후 저장
-        optionalUser.ifPresent(user -> {
-            user.setEnabled(true);
-            userRepository.save(user);
-        });
+        if (!optionalUser.isPresent()) {
+            throw new CustomException(ErrorCode.NOT_FOUND_USER); // 사용자 정보 없음
+        }
 
-        return optionalUser.isPresent();  // user가 존재하면 true 반환
+        // 사용자 존재하면 enabled 설정 후 저장
+        User user = optionalUser.get();
+        user.setEnabled(true);
+
+        try {
+            userRepository.save(user);
+        } catch (Exception e) {
+            // 사용자 저장 중 오류가 발생한 경우
+            log.error("Failed to enable user with email: {}", email, e);
+            throw new CustomException(DefaultErrorCode.INTERNAL_SERVER_ERROR); // 내부 서버 오류
+        }
+
+        // 성공적으로 활성화 처리된 경우
+        return true;
     }
+
+
 }

@@ -1,7 +1,9 @@
 package com.example.tradetrackeruser.service;
 
+import com.example.api.response.CustomException;
 import com.example.tradetrackeruser.dto.Passport;
 import com.example.tradetrackeruser.dto.UserRegisterDto;
+import com.example.tradetrackeruser.dto.VerifyResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.tradetrackeruser.repository.UserRepository;
 import com.example.tradetrackeruser.entity.User;
+import com.example.tradetrackeruser.response.ErrorCode;
 
 import java.util.Optional;
 
@@ -33,7 +36,7 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findUserByEmail(username).orElseThrow(
-                ()->new UsernameNotFoundException(username));
+                ()->new CustomException(ErrorCode.NOT_FOUND_USER));
     }
 
     public Optional<User> findUser(String email) {
@@ -65,18 +68,20 @@ public class UserService implements UserDetailsService {
         }
 
         // 인증 정보가 없는 경우 (로그아웃 실패)
-        return false;
+        throw new CustomException(ErrorCode.NOT_FOUND_USER); // 사용자 정보 없음
     }
 
-    public Passport getUserInfo() {
-        // SecurityContext에서 인증된 사용자 정보 가져오기
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.isAuthenticated()) {
-            User user = (User) authentication.getPrincipal();
-            return new Passport(user.getId(), user.getEmail());
-        }
-        return null;
+    public Passport getUserInfo(VerifyResult verifyResult) {
+        String username = verifyResult.username();
+        Optional<User> user = userRepository.findUserByEmail(username);
+
+        System.out.println("User found: " + user);
+
+        return user.map(u -> new Passport(u.getId(), u.getUsername()))
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
     }
+
+
 
 
     // 권한 관련

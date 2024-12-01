@@ -45,14 +45,14 @@ public class JWTUtil {
         try {
             // 검증 성공
             DecodedJWT verify = JWT.require(ALGORITHM).build().verify(token);
-            return VerifyResult.builder().success(true)
-                    .username(verify.getSubject()).build();
+            return new VerifyResult(true, verify.getSubject());
+
         }catch(Exception ex){
             // 검증 실패
             // ?! sub에 아무 내용이 없으면 어떻게 되지 ?!
             DecodedJWT decode = JWT.decode(token);
-            return VerifyResult.builder().success(false)
-                    .username(decode.getSubject()).build();
+            return new VerifyResult(false, decode.getSubject());
+
         }
     }
 

@@ -61,7 +61,7 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
 
             // refresh token 유효기간 O
             if(verify.isSuccess()){
-                User user = (User) userService.loadUserByUsername(verify.getUsername());
+                User user = (User) userService.loadUserByUsername(verify.username());
 
 //                // Refresh Token Redis 확인
                 if (tokenService.isRefreshTokenValid(user.getEmail(), userLogin.getRefreshToken())) {

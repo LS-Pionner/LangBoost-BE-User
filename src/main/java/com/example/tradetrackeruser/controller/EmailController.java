@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.tradetrackeruser.dto.EmailDto;
 
+import com.example.api.response.ApiResponse;
+
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -20,18 +23,20 @@ public class EmailController {
 
     // 인증코드 메일 발송
     @PostMapping("/send")
-    public String mailSend(@RequestBody EmailDto emailDto) throws MessagingException {
+    public ApiResponse<String> mailSend(@RequestBody EmailDto emailDto) throws MessagingException {
         log.info("EmailController.mailSend()");
         emailService.sendEmail(emailDto);
-        return "인증코드가 발송되었습니다.";
+        String message = "인증코드가 발송되었습니다.";
+        return ApiResponse.ok(message);
     }
 
 
     // 인증코드 인증
     @PostMapping("/verify")
-    public String verify(@RequestBody EmailDto emailDto) {
+    public ApiResponse<String> verify(@RequestBody EmailDto emailDto) {
         log.info("EmailController.verify()");
         boolean isVerify = emailService.verifyEmailCode(emailDto);
-        return isVerify ? "인증이 완료되었습니다." : "인증 실패하셨습니다.";
+
+        return ApiResponse.ok("인증이 완료되었습니다.");
     }
 }
