@@ -8,6 +8,9 @@ build/
 ### Enviornment Variable ###
 application.properties
 application.yml
+application-dev.yml
+application-prod.yml
+gradle.properties
 
 ### STS ###
 .apt_generated

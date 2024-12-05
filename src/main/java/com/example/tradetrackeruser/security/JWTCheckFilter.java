@@ -1,7 +1,9 @@
 package com.example.tradetrackeruser.security;
 
 import com.auth0.jwt.exceptions.TokenExpiredException;
+import com.example.api.response.CustomException;
 import com.example.tradetrackeruser.dto.VerifyResult;
+import com.example.tradetrackeruser.response.ErrorCode;
 import com.example.tradetrackeruser.security.JWTUtil;
 import com.example.tradetrackeruser.service.UserService;
 import jakarta.servlet.FilterChain;
@@ -33,10 +35,13 @@ public class JWTCheckFilter extends BasicAuthenticationFilter {
 
         // 토큰 존재 x
         if(bearer == null || !bearer.startsWith("Bearer ")){
-            chain.doFilter(request, response);
-            return;
-        }
+            // ?! 에러 처리 오류
+            throw new CustomException(ErrorCode.INVALID_TOKEN);
 
+            // 원래 있던 코드
+//            chain.doFilter(request, response);
+//            return;
+        }
 
         // 토큰 존재 o
         String token = bearer.substring("Bearer ".length());
@@ -53,7 +58,11 @@ public class JWTCheckFilter extends BasicAuthenticationFilter {
             SecurityContextHolder.getContext().setAuthentication(userToken);
             chain.doFilter(request, response);
         }else{
-            throw new TokenExpiredException("Token is not valid");
+            // ?! 에러 처리 오류
+            throw new CustomException(ErrorCode.INVALID_TOKEN);
+
+            // 원래 있던 코드
+//            throw new TokenExpiredException("Token is not valid");
         }
     }
 
