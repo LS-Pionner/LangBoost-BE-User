@@ -13,16 +13,20 @@ java {
     }
 }
 
+//repositories {
+//    mavenCentral()
+//    //	mavenLocal()
+//    maven {
+//        url = uri("https://maven.pkg.github.com/LS-Pionner/LangBoost-BE-api-response-library")
+//        credentials {
+//            username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
+//            password = project.findProperty("gpr.token") ?: System.getenv("GITHUB_TOKEN")
+//        }
+//    }
+//}
 repositories {
     mavenCentral()
-    //	mavenLocal()
-    maven {
-        url = uri("https://maven.pkg.github.com/LS-Pionner/LangBoost-BE-api-response-library")
-        credentials {
-            username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
-            password = project.findProperty("gpr.token") ?: System.getenv("GITHUB_TOKEN")
-        }
-    }
+    mavenLocal()        // 기본 Maven 로컬 저장소
 }
 
 dependencies {
