@@ -33,6 +33,12 @@ public class JWTCheckFilter extends BasicAuthenticationFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         String bearer = request.getHeader(HttpHeaders.AUTHORIZATION);
 
+        // 아래 경로에 대해서는 필터 X
+        if (request.getRequestURI().equals("/api/v1/auth/register") || request.getRequestURI().equals("/api/v1/auth/authenticate")) {
+            chain.doFilter(request, response);
+            return;
+        }
+
         // 토큰 존재 x
         if(bearer == null || !bearer.startsWith("Bearer ")){
             // ?! 에러 처리 오류

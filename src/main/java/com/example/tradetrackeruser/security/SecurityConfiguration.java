@@ -1,5 +1,6 @@
 package com.example.tradetrackeruser.security;
 
+import com.example.tradetrackeruser.response.CustomAuthenticationEntryPoint;
 import com.example.tradetrackeruser.service.TokenService;
 import com.example.tradetrackeruser.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,9 @@ public class SecurityConfiguration {
     @Autowired
     private TokenService tokenService;
 
+    @Autowired
+    private CustomAuthenticationEntryPoint authenticationEntryPoint;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
         JWTLoginFilter loginFilter = new JWTLoginFilter(authenticationManager, userService, tokenService);
@@ -44,6 +48,8 @@ public class SecurityConfiguration {
                         auth
                                 .requestMatchers("/api/v1/auth/register", "/api/v1/auth/authenticate").permitAll() // 이 경로들은 인증 없이 접근 가능
                                 .anyRequest().authenticated() // 나머지 모든 요청은 인증 필요
+                ).exceptionHandling(exception ->
+                        exception.authenticationEntryPoint(authenticationEntryPoint)
                 )
 //
 //                .authorizeHttpRequests(auth ->
