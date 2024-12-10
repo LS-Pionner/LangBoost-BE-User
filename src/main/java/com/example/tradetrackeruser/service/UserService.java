@@ -1,10 +1,11 @@
 package com.example.tradetrackeruser.service;
 
 import com.example.api.response.CustomException;
-import com.example.tradetrackeruser.dto.Passport;
-import com.example.tradetrackeruser.dto.UserRegisterDto;
-import com.example.tradetrackeruser.dto.VerifyResult;
+import com.example.tradetrackeruser.dto.*;
+import com.example.tradetrackeruser.security.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -33,6 +34,9 @@ public class UserService implements UserDetailsService {
     @Autowired
     private TokenService tokenService;  // PasswordEncoder 주입
 
+    @Autowired
+    private AuthenticationManagerBuilder authenticationManagerBuilder;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findUserByEmail(username).orElseThrow(
@@ -47,7 +51,7 @@ public class UserService implements UserDetailsService {
         User user = new User();
         user.setEmail(userRegisterDto.email());
         user.setPassword(passwordEncoder.encode(userRegisterDto.password()));
-        user.setEnabled(false);
+        user.setEnabled(true);  // enabled true로 변경 후 로그인 시 계정 잠금 문제 해결 (기존 false)
 
         return userRepository.save(user);
     }
@@ -81,7 +85,21 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
     }
 
+    public UserInfoAndTokenDto loginUser(UserLoginForm loginForm) {
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginForm.getUsername(), loginForm.getPassword());
 
+        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+        User user = (User) authentication.getPrincipal();
+
+        String accessToken = JWTUtil.makeAccessToken(user);
+        String refreshToken = JWTUtil.makeRefreshToken(user);
+        tokenService.saveRefreshTokenToRedis(user.getEmail(), refreshToken, JWTUtil.REFRESH_TIME);
+
+        TokenDto tokenDto = new TokenDto(accessToken, refreshToken);
+        UserInfoDto userInfoDto = new UserInfoDto(user.getId(), user.getEmail(), user.getUsername(), user.getPassword(), user.isEnabled());
+
+        return new UserInfoAndTokenDto(userInfoDto, tokenDto);
+    }
 
 
     // 권한 관련

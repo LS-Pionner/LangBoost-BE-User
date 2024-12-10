@@ -34,7 +34,7 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
-        JWTLoginFilter loginFilter = new JWTLoginFilter(authenticationManager, userService, tokenService);
+//        JWTLoginFilter loginFilter = new JWTLoginFilter(authenticationManager, userService, tokenService);
         JWTCheckFilter checkFilter = new JWTCheckFilter(authenticationManager, userService);
 //        RedisLoginFilter redisLoginFilter = new RedisLoginFilter(tokenService);
 
@@ -46,7 +46,7 @@ public class SecurityConfiguration {
                 )
                 .authorizeHttpRequests(auth ->
                         auth
-                                .requestMatchers("/api/v1/auth/register", "/api/v1/auth/authenticate").permitAll() // 이 경로들은 인증 없이 접근 가능
+                                .requestMatchers("/api/v1/auth/register", "/api/v1/auth/authenticate", "/api/v1/login").permitAll() // 이 경로들은 인증 없이 접근 가능
                                 .anyRequest().authenticated() // 나머지 모든 요청은 인증 필요
                 ).exceptionHandling(exception ->
                         exception.authenticationEntryPoint(authenticationEntryPoint)
@@ -55,7 +55,7 @@ public class SecurityConfiguration {
 //                .authorizeHttpRequests(auth ->
 //                        auth.anyRequest().permitAll() // 모든 요청에 대해 인증 없이 허용
 //                )
-                .addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class) // 로그인 필터 추가
+//                .addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class) // 로그인 필터 추가
                 .addFilterAt(checkFilter, BasicAuthenticationFilter.class); // JWT 검증 필터 추가
 
         return http.build(); // SecurityFilterChain 반환
