@@ -4,6 +4,7 @@ package com.example.tradetrackeruser.controller;
 import com.example.api.response.ApiResponse;
 import com.example.tradetrackeruser.dto.*;
 import com.example.tradetrackeruser.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -47,6 +48,17 @@ public class AuthController {
         return ApiResponse.ok(userInfoAndTokenDto.userInfoDto());
     }
 
+    // 토큰 재발급
+    @PostMapping("/auth/reissue")
+    public ApiResponse<UserInfoDto> reissue(HttpServletRequest request, HttpServletResponse response) {
+        String refreshToken = request.getHeader("refresh_token");
 
+        UserInfoAndTokenDto userInfoAndTokenDto = userService.reissueToken(refreshToken);
+
+        response.setHeader(HttpHeaders.AUTHORIZATION, "Bearer " + userInfoAndTokenDto.tokenDto().accessToken());
+        response.setHeader("refresh_token", userInfoAndTokenDto.tokenDto().refreshToken());
+
+        return ApiResponse.ok(userInfoAndTokenDto.userInfoDto());
+    }
 
 }
