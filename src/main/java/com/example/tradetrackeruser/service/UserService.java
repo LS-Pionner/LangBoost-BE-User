@@ -2,6 +2,7 @@ package com.example.tradetrackeruser.service;
 
 import com.example.api.response.CustomException;
 import com.example.tradetrackeruser.dto.*;
+import com.example.tradetrackeruser.entity.RoleType;
 import com.example.tradetrackeruser.security.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -51,6 +52,7 @@ public class UserService implements UserDetailsService {
         User user = new User();
         user.setEmail(userRegisterDto.email());
         user.setPassword(passwordEncoder.encode(userRegisterDto.password()));
+        user.setRoleType(RoleType.NOBODY);
         user.setEnabled(true);  // enabled true로 변경 후 로그인 시 계정 잠금 문제 해결 (기존 false)
 
         return userRepository.save(user);

@@ -1,2 +1,5 @@
-package com.example.tradetrackeruser.entity;public enum RoleType {
+package com.example.tradetrackeruser.entity;
+
+public enum RoleType {
+    ADMIN, USER, NOBODY
 }

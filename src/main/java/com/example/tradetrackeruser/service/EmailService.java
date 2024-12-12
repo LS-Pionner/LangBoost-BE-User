@@ -3,6 +3,7 @@ package com.example.tradetrackeruser.service;
 import com.example.api.response.CustomException;
 import com.example.api.response.DefaultErrorCode;
 import com.example.tradetrackeruser.dto.EmailDto;
+import com.example.tradetrackeruser.entity.RoleType;
 import com.example.tradetrackeruser.repository.UserRepository;
 import com.example.tradetrackeruser.response.ErrorCode;
 import com.example.tradetrackeruser.util.RedisUtil;
@@ -143,7 +144,8 @@ public class EmailService {
 
         // 사용자 존재하면 enabled 설정 후 저장
         User user = optionalUser.get();
-        user.setEnabled(true);
+        user.setRoleType(RoleType.USER);
+//        user.setEnabled(true);
 
         try {
             userRepository.save(user);

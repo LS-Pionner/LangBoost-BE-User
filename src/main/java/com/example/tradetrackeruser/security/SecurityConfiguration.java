@@ -1,5 +1,7 @@
 package com.example.tradetrackeruser.security;
 
+import com.example.tradetrackeruser.entity.RoleType;
+import com.example.tradetrackeruser.response.CustomAccessDeniedHandler;
 import com.example.tradetrackeruser.response.CustomAuthenticationEntryPoint;
 import com.example.tradetrackeruser.service.TokenService;
 import com.example.tradetrackeruser.service.UserService;
@@ -32,6 +34,9 @@ public class SecurityConfiguration {
     @Autowired
     private CustomAuthenticationEntryPoint authenticationEntryPoint;
 
+    @Autowired
+    private CustomAccessDeniedHandler customAccessDeniedHandler;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
 //        JWTLoginFilter loginFilter = new JWTLoginFilter(authenticationManager, userService, tokenService);
@@ -46,10 +51,13 @@ public class SecurityConfiguration {
                 )
                 .authorizeHttpRequests(auth ->
                         auth
-                                .requestMatchers("/api/v1/auth/register", "/api/v1/auth/authenticate", "/api/v1/login").permitAll() // 이 경로들은 인증 없이 접근 가능
-                                .anyRequest().authenticated() // 나머지 모든 요청은 인증 필요
+                                .requestMatchers("/api/v1/register", "/api/v1/authenticate", "/api/v1/login").permitAll() // 이 경로들은 인증 없이 접근 가능
+                                .requestMatchers("/api/v1/**").hasAnyRole(RoleType.USER.name(), RoleType.ADMIN.name()) // 나머지 모든 요청은 USER 권한 필요
+                                .anyRequest().permitAll()
                 ).exceptionHandling(exception ->
-                        exception.authenticationEntryPoint(authenticationEntryPoint)
+                        exception
+                                .authenticationEntryPoint(authenticationEntryPoint)
+                                .accessDeniedHandler(customAccessDeniedHandler)
                 )
 //
 //                .authorizeHttpRequests(auth ->

@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
@@ -28,6 +29,9 @@ public class User implements UserDetails {
 
     @Column(name = "password")
     private String password;
+
+    @Enumerated(EnumType.STRING)
+    private RoleType roleType;
 
     @Column(name = "enabled")
     private boolean enabled;
@@ -55,6 +59,6 @@ public class User implements UserDetails {
     // 권한 사용 안함 : 빈 리스트 반환
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.emptyList();
+        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + roleType.name()));
     }
 }

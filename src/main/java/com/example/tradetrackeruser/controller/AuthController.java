@@ -18,7 +18,7 @@ public class AuthController {
     private UserService userService;
 
     // 회원가입
-    @PostMapping("/auth/register")
+    @PostMapping("/register")
     public ApiResponse<String> register(@RequestBody UserRegisterDto userRegisterDto) {
         userService.createUser(userRegisterDto);
         return ApiResponse.ok("회원가입 성공");
@@ -31,7 +31,7 @@ public class AuthController {
         return ApiResponse.ok("로그아웃 성공");
     }
 
-    @PostMapping("/auth/authenticate")
+    @PostMapping("/authenticate")
     public ApiResponse<Passport> getUserAuthenticate(@RequestBody VerifyResult verifyResult) {
         Passport passport = userService.getUserInfo(verifyResult);
         return ApiResponse.ok(passport);
