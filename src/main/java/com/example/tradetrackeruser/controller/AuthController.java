@@ -50,15 +50,15 @@ public class AuthController {
 
     // 토큰 재발급
     @PostMapping("/auth/reissue")
-    public ApiResponse<UserInfoDto> reissue(HttpServletRequest request, HttpServletResponse response) {
+    public ApiResponse<String> reissue(HttpServletRequest request, HttpServletResponse response) {
         String refreshToken = request.getHeader("refresh_token");
 
-        UserInfoAndTokenDto userInfoAndTokenDto = userService.reissueToken(refreshToken);
+        TokenDto tokenDto = userService.reissueToken(refreshToken);
 
-        response.setHeader(HttpHeaders.AUTHORIZATION, "Bearer " + userInfoAndTokenDto.tokenDto().accessToken());
-        response.setHeader("refresh_token", userInfoAndTokenDto.tokenDto().refreshToken());
+        response.setHeader(HttpHeaders.AUTHORIZATION, "Bearer " + tokenDto.accessToken());
+        response.setHeader("refresh_token", tokenDto.refreshToken());
 
-        return ApiResponse.ok(userInfoAndTokenDto.userInfoDto());
+        return ApiResponse.ok("재발급 성공");
     }
 
 }

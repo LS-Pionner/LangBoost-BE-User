@@ -101,7 +101,7 @@ public class UserService implements UserDetailsService {
         return new UserInfoAndTokenDto(userInfoDto, tokenDto);
     }
 
-    public UserInfoAndTokenDto reissueToken(String refreshToken) {
+    public TokenDto reissueToken(String refreshToken) {
         VerifyResult verifyResult = JWTUtil.verify(refreshToken);
 
         // 전달받은 refresh 토큰이 유효하지 않음
@@ -120,10 +120,7 @@ public class UserService implements UserDetailsService {
         String reissuedRefreshToken = JWTUtil.makeRefreshToken(user);
         tokenService.saveRefreshTokenToRedis(user.getEmail(), reissuedRefreshToken, JWTUtil.REFRESH_TIME);
 
-        TokenDto tokenDto = new TokenDto(reissuedAccessToken, reissuedRefreshToken);
-        UserInfoDto userInfoDto = new UserInfoDto(user.getId(), user.getEmail(), user.getUsername(), user.getPassword(), user.isEnabled());
-
-        return new UserInfoAndTokenDto(userInfoDto, tokenDto);
+        return new TokenDto(reissuedAccessToken, reissuedRefreshToken);
     }
 
 
