@@ -49,7 +49,7 @@ public class AuthController {
                 .path("/")
                 // Https 환경에서만 동작
 //                .secure(true)
-                .sameSite("None")
+                .sameSite("Lax")
                 .httpOnly(true)
                 .build();
 
