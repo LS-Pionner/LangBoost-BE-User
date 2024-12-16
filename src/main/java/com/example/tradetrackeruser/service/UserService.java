@@ -97,8 +97,9 @@ public class UserService implements UserDetailsService {
 
     public UserInfoAndTokenDto loginUser(UserLoginForm loginForm) {
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginForm.getUsername(), loginForm.getPassword());
-
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
         User user = (User) authentication.getPrincipal();
 
         String accessToken = JWTUtil.makeAccessToken(user);
