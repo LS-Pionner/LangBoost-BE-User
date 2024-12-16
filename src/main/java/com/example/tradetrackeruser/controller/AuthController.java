@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -42,8 +43,19 @@ public class AuthController {
     public ApiResponse<UserInfoDto> login(@RequestBody UserLoginForm loginForm, HttpServletResponse response) {
         UserInfoAndTokenDto userInfoAndTokenDto = userService.loginUser(loginForm);
 
+        // 쿠키로 전달
+        ResponseCookie cookie = ResponseCookie.from("RefreshToken", userInfoAndTokenDto.tokenDto().refreshToken())
+                .maxAge(60 * 60 * 24 * 7)   // 7일
+                .path("/")
+                // Https 환경에서만 동작
+//                .secure(true)
+                .sameSite("None")
+                .httpOnly(true)
+                .build();
+
         response.setHeader(HttpHeaders.AUTHORIZATION, "Bearer " + userInfoAndTokenDto.tokenDto().accessToken());
-        response.setHeader("refresh_token", userInfoAndTokenDto.tokenDto().refreshToken());
+        response.setHeader("Set-Cookie", cookie.toString());
+//        response.setHeader("refresh_token", userInfoAndTokenDto.tokenDto().refreshToken());
 
         return ApiResponse.ok(userInfoAndTokenDto.userInfoDto());
     }
