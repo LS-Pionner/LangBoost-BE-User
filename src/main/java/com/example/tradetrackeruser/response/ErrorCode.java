@@ -11,6 +11,7 @@ public enum ErrorCode implements ErrorCodeInterface {
 
     // 400 BAD REQUEST
     INVALID_VERIFY_CODE(40001, HttpStatus.BAD_REQUEST, "유효하지 않은 인증 코드입니다."),
+    EMAIL_ALREADY_EXISTS(40002, HttpStatus.BAD_REQUEST, "이미 사용중인 이메일입니다."),
 
     // 401 Unauthorized - 잘못된 토큰
     INVALID_TOKEN(40101, HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다."),

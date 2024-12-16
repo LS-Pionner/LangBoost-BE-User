@@ -49,6 +49,8 @@ public class UserService implements UserDetailsService {
     }
 
     public User createUser(UserRegisterDto userRegisterDto) {
+        checkEmailExists(userRegisterDto.email());
+
         User user = new User();
         user.setEmail(userRegisterDto.email());
         user.setPassword(passwordEncoder.encode(userRegisterDto.password()));
@@ -56,6 +58,12 @@ public class UserService implements UserDetailsService {
         user.setEnabled(true);  // enabled true로 변경 후 로그인 시 계정 잠금 문제 해결 (기존 false)
 
         return userRepository.save(user);
+    }
+
+    private void checkEmailExists(String email) {
+        if (userRepository.findUserByEmail(email).isPresent()) {
+            throw new CustomException(ErrorCode.EMAIL_ALREADY_EXISTS);
+        }
     }
 
     public boolean logoutUser() {
