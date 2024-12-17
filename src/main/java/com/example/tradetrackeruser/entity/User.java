@@ -56,7 +56,6 @@ public class User implements UserDetails {
         return enabled;
     }
 
-    // 권한 사용 안함 : 빈 리스트 반환
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + roleType.name()));
