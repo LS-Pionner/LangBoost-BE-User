@@ -27,8 +27,10 @@ public class AuthController {
 
     // 로그아웃
     @PostMapping("/auth/logout")
-    public ApiResponse<String> logout() {
+    public ApiResponse<String> logout(HttpServletResponse response) {
         userService.logoutUser();
+
+        response.addHeader("Set-Cookie", "RefreshToken=; Max-Age=0; path=/; SameSite=Lax"); // 브라우저에 저장된 쿠키 삭제
         return ApiResponse.ok("로그아웃 성공");
     }
 
@@ -44,7 +46,8 @@ public class AuthController {
         UserInfoAndTokenDto userInfoAndTokenDto = userService.loginUser(loginForm);
 
         // 쿠키로 전달
-        ResponseCookie cookie = ResponseCookie.from("RefreshToken", userInfoAndTokenDto.tokenDto().refreshToken())
+        ResponseCookie cookie = ResponseCookie
+                .from("RefreshToken", userInfoAndTokenDto.tokenDto().refreshToken())
                 .maxAge(60 * 60 * 24 * 7)   // 7일
                 .path("/")
                 // Https 환경에서만 동작
