@@ -25,6 +25,12 @@ public class AuthController {
         return ApiResponse.ok("회원가입 성공");
     }
 
+    @GetMapping("/email-check")
+    public ApiResponse<String> checkEmailAvailable(@RequestParam(name = "email") String email) {
+        userService.checkEmailExists(email);
+        return ApiResponse.ok("사용가능한 이메일입니다.");
+    }
+
     // 로그아웃
     @PostMapping("/auth/logout")
     public ApiResponse<String> logout(HttpServletResponse response) {

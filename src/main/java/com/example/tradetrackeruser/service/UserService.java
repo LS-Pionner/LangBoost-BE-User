@@ -60,7 +60,7 @@ public class UserService implements UserDetailsService {
         return userRepository.save(user);
     }
 
-    private void checkEmailExists(String email) {
+    public void checkEmailExists(String email) {
         if (userRepository.findUserByEmail(email).isPresent()) {
             throw new CustomException(ErrorCode.EMAIL_ALREADY_EXISTS);
         }

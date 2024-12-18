@@ -56,7 +56,7 @@ public class SecurityConfiguration {
                 )
                 .authorizeHttpRequests(auth ->
                         auth
-                                .requestMatchers("/api/v1/register", "/api/v1/authenticate", "/api/v1/login").permitAll() // 이 경로들은 인증 없이 접근 가능
+                                .requestMatchers("/api/v1/register", "/api/v1/authenticate", "/api/v1/login", "/api/v1/email-check").permitAll() // 이 경로들은 인증 없이 접근 가능
                                 .requestMatchers("/api/v1/auth/logout").authenticated() // 로그아웃은 권한에 상관없이 접근 가능
                                 .requestMatchers("/api/v1/**").hasAnyRole(RoleType.USER.name(), RoleType.ADMIN.name()) // 나머지 모든 요청은 USER 권한 필요
                                 .anyRequest().permitAll()
