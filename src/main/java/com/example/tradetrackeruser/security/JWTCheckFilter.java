@@ -1,25 +1,28 @@
 package com.example.tradetrackeruser.security;
 
-import com.auth0.jwt.exceptions.TokenExpiredException;
-import com.example.api.response.CustomException;
 import com.example.tradetrackeruser.dto.VerifyResult;
-import com.example.tradetrackeruser.response.ErrorCode;
-import com.example.tradetrackeruser.security.JWTUtil;
+import com.example.tradetrackeruser.security.exception.JWTAuthenticationException;
 import com.example.tradetrackeruser.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
+
+
+
+
 import com.example.tradetrackeruser.entity.User;
 
 import java.io.IOException;
 
+@Slf4j
 public class JWTCheckFilter extends BasicAuthenticationFilter {
 
     private UserService userService;
@@ -35,12 +38,9 @@ public class JWTCheckFilter extends BasicAuthenticationFilter {
 
         // 토큰 존재 x
         if(bearer == null || !bearer.startsWith("Bearer ")){
-            // ?! 에러 처리 오류
-            throw new CustomException(ErrorCode.INVALID_TOKEN);
-
-            // 원래 있던 코드
-//            chain.doFilter(request, response);
-//            return;
+            log.error("Invalid Authorization header format. Header: {}", bearer);
+            // 예외를 던져 EntryPoint에서 ;해결
+            throw new JWTAuthenticationException("Authorization header is missing");
         }
 
         // 토큰 존재 o
@@ -56,13 +56,13 @@ public class JWTCheckFilter extends BasicAuthenticationFilter {
                     user, null, user.getAuthorities()
             );
             SecurityContextHolder.getContext().setAuthentication(userToken);
+            log.info("Token successfully verified for user: {}. Request URI: {}", user.getUsername(), request.getRequestURI());
             chain.doFilter(request, response);
         }else{
-            // ?! 에러 처리 오류
-            throw new CustomException(ErrorCode.INVALID_TOKEN);
+            // 검증 실패 시 로그 기록
+            log.error("Token verification failed for token: {}.", token);
 
-            // 원래 있던 코드
-//            throw new TokenExpiredException("Token is not valid");
+            throw new JWTAuthenticationException("Invalid or expired token.");
         }
     }
 

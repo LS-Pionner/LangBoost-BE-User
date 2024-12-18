@@ -2,9 +2,11 @@ package com.example.tradetrackeruser.controller;
 
 
 import com.example.api.response.ApiResponse;
+import com.example.api.response.CustomException;
 import com.example.tradetrackeruser.dto.Passport;
 import com.example.tradetrackeruser.dto.UserRegisterDto;
 import com.example.tradetrackeruser.dto.VerifyResult;
+import com.example.tradetrackeruser.response.ErrorCode;
 import com.example.tradetrackeruser.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -35,9 +37,6 @@ public class AuthController {
         Passport passport = userService.getUserInfo(verifyResult);
         return  ApiResponse.ok(passport);
     }
-
-
-
 
 
 }
