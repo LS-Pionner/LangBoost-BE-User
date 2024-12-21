@@ -13,21 +13,21 @@ java {
     }
 }
 
-//repositories {
-//    mavenCentral()
-//    //	mavenLocal()
-//    maven {
-//        url = uri("https://maven.pkg.github.com/LS-Pionner/LangBoost-BE-api-response-library")
-//        credentials {
-//            username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
-//            password = project.findProperty("gpr.token") ?: System.getenv("GITHUB_TOKEN")
-//        }
-//    }
-//}
 repositories {
     mavenCentral()
-    mavenLocal()        // 기본 Maven 로컬 저장소
+    //	mavenLocal()
+    maven {
+        url = uri("https://maven.pkg.github.com/LS-Pionner/LangBoost-BE-api-response-library")
+        credentials {
+            username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
+            password = project.findProperty("gpr.token") ?: System.getenv("GITHUB_TOKEN")
+        }
+    }
 }
+//repositories {
+//    mavenCentral()
+//    mavenLocal()        // 기본 Maven 로컬 저장소
+//}
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -38,7 +38,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
     // jWT
-    implementation("com.auth0:java-jwt:3.16.0")  // oauth0
+    implementation("com.auth0:java-jwt:3.16.0")
+    implementation 'org.projectlombok:lombok:1.18.22'// oauth0
 
 
     // 로그 라이브러리 사용을 위해 추가
@@ -67,7 +68,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
     // github에서 api-response 라이브러리 가져옴
-    implementation 'com.practice:api-response-library:1.0.0'
+    implementation 'com.practice:api-response-library:1.0.1'
 
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
