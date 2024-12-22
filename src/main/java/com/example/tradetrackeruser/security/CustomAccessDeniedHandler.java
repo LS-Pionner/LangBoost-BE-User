@@ -1,27 +1,28 @@
-package com.example.tradetrackeruser.response;
+package com.example.tradetrackeruser.security;
 
 import com.example.api.response.ApiResponse;
+import com.example.tradetrackeruser.response.ErrorCode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
 @Component
-public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
+public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 
     @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
+        response.setStatus(HttpStatus.FORBIDDEN.value());
         response.setContentType("application/json;charset=UTF-8");
 
         // ApiResponse 생성
-        ApiResponse<Void> apiResponse = ApiResponse.fail(ErrorCode.INVALID_TOKEN);
+        ApiResponse<Void> apiResponse = ApiResponse.fail(ErrorCode.FORBIDDEN);
 
         // JSON으로 응답 작성
         ObjectMapper objectMapper = new ObjectMapper();

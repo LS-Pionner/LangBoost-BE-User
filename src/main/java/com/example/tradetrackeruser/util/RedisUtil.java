@@ -14,6 +14,7 @@ public class RedisUtil {
 
     public String getData(String key) {
         ValueOperations<String, String> valueOperations = template.opsForValue();
+
         return valueOperations.get(key);
     }
 
@@ -24,6 +25,7 @@ public class RedisUtil {
     public void setDataExpire(String key, String value, long duration) {
         ValueOperations<String, String> valueOperations = template.opsForValue();
         Duration expireDuration = Duration.ofSeconds(duration);
+
         valueOperations.set(key, value, expireDuration);
     }
 

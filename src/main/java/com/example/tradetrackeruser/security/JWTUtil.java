@@ -15,8 +15,6 @@ public class JWTUtil {
     private static final long AUTH_TIME = 60 * 60; // 60분
     public static final long REFRESH_TIME = 60 * 60 * 24 * 7; // 7일
 
-
-
     // @Value로 application.yml에서 secret 값을 주입
 //    public JWTUtil(@Value("${jwt.secret}") String secret) {
 //        this.ALGORITHM = Algorithm.HMAC256(secret);
@@ -39,7 +37,6 @@ public class JWTUtil {
                 .sign(ALGORITHM);
     }
 
-
     // jwt 검증
     public static VerifyResult verify(String token){
         try {
@@ -52,8 +49,6 @@ public class JWTUtil {
             // ?! sub에 아무 내용이 없으면 어떻게 되지 ?!
             DecodedJWT decode = JWT.decode(token);
             return new VerifyResult(false, decode.getSubject());
-
         }
     }
-
 }

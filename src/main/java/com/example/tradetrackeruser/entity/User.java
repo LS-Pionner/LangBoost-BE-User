@@ -1,10 +1,7 @@
 package com.example.tradetrackeruser.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,12 +9,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
 
-@Data
-@AllArgsConstructor
+@Getter
 @NoArgsConstructor
-@Builder
+@Table(name = "user")
 @Entity
-@Table(name="user")
 public class User implements UserDetails {
 
     @Id
@@ -59,5 +54,17 @@ public class User implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + roleType.name()));
+    }
+
+    @Builder
+    public User(String email, String password, RoleType roleType, boolean enabled) {
+        this.email = email;
+        this.password = password;
+        this.roleType = roleType;
+        this.enabled = enabled;
+    }
+
+    public void updateRole(RoleType roleType) {
+        this.roleType = roleType;
     }
 }

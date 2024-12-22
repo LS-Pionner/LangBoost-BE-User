@@ -18,12 +18,11 @@ public enum ErrorCode implements ErrorCodeInterface {
     INVALID_REFRESH_TOKEN(40201, HttpStatus.UNAUTHORIZED, "리프레시 토큰이 유효하지 않습니다"),
     NOT_MATCHED_REFRESH_TOKEN(40202, HttpStatus.UNAUTHORIZED, "리프레시 토큰이 일치하지 않습니다"),
 
-    // 404 Not Found
-    NOT_FOUND_USER(40401, HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."),
-
     // 403 Forbidden
     FORBIDDEN(40301, HttpStatus.FORBIDDEN, "접근 권한이 없습니다."),
 
+    // 404 Not Found
+    NOT_FOUND_USER(40401, HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."),
 
     // 500 Internal Server Error
     TEST(50001, HttpStatus.INTERNAL_SERVER_ERROR, "테스트 에러");

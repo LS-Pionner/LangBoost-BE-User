@@ -4,7 +4,8 @@ import com.example.api.response.CustomException;
 import com.example.tradetrackeruser.dto.*;
 import com.example.tradetrackeruser.entity.RoleType;
 import com.example.tradetrackeruser.security.JWTUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -22,21 +23,18 @@ import com.example.tradetrackeruser.response.ErrorCode;
 
 import java.util.Optional;
 
-@Service
+@Slf4j
+@RequiredArgsConstructor
 @Transactional
+@Service
 public class UserService implements UserDetailsService {
+    private final UserRepository userRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final TokenService tokenService;
 
-    @Autowired
-    private TokenService tokenService;  // PasswordEncoder 주입
-
-    @Autowired
-    private AuthenticationManagerBuilder authenticationManagerBuilder;
+    private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -44,18 +42,15 @@ public class UserService implements UserDetailsService {
                 ()->new CustomException(ErrorCode.NOT_FOUND_USER));
     }
 
-    public Optional<User> findUser(String email) {
-        return userRepository.findUserByEmail(email);
-    }
-
     public User createUser(UserRegisterDto userRegisterDto) {
         checkEmailExists(userRegisterDto.email());
 
-        User user = new User();
-        user.setEmail(userRegisterDto.email());
-        user.setPassword(passwordEncoder.encode(userRegisterDto.password()));
-        user.setRoleType(RoleType.NOBODY);
-        user.setEnabled(true);  // enabled true로 변경 후 로그인 시 계정 잠금 문제 해결 (기존 false)
+        User user = User.builder()
+                .email(userRegisterDto.email())
+                .password(passwordEncoder.encode(userRegisterDto.password()))
+                .roleType(RoleType.NOBODY)
+                .enabled(true)
+                .build();
 
         return userRepository.save(user);
     }
@@ -89,7 +84,7 @@ public class UserService implements UserDetailsService {
         String username = verifyResult.username();
         Optional<User> user = userRepository.findUserByEmail(username);
 
-        System.out.println("User found: " + user);
+        log.info("User found: {}", user);
 
         return user.map(u -> new Passport(u.getId(), u.getUsername()))
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
@@ -133,39 +128,4 @@ public class UserService implements UserDetailsService {
 
         return new TokenDto(reissuedAccessToken, reissuedRefreshToken);
     }
-
-
-    // 권한 관련
-/*    public void addAuthority(Long userId, String authority){
-        userRepository.findById(userId).ifPresent(user->{
-            SpAuthority newRole = new SpAuthority(user.getUserId(), authority);
-            if(user.getAuthorities() == null){
-                HashSet<SpAuthority> authorities = new HashSet<>();
-                authorities.add(newRole);
-                user.setAuthorities(authorities);
-                save(user);
-            }else if(!user.getAuthorities().contains(newRole)){
-                HashSet<SpAuthority> authorities = new HashSet<>();
-                authorities.addAll(user.getAuthorities());
-                authorities.add(newRole);
-                user.setAuthorities(authorities);
-                save(user);
-            }
-        });
-    }*/
-
-    //권한 관련
-/*    public void removeAuthority(Long userId, String authority){
-        userRepository.findById(userId).ifPresent(user->{
-            if(user.getAuthorities()==null) return;
-            SpAuthority targetRole = new SpAuthority(user.getUserId(), authority);
-            if(user.getAuthorities().contains(targetRole)){
-                user.setAuthorities(
-                        user.getAuthorities().stream().filter(auth->!auth.equals(targetRole))
-                                .collect(Collectors.toSet())
-                );
-                save(user);
-            }
-        });
-    }*/
 }

@@ -11,7 +11,6 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
@@ -23,17 +22,14 @@ import com.example.tradetrackeruser.entity.User;
 import java.util.Optional;
 import java.util.Random;
 
-
 @Slf4j
-@Service
 @RequiredArgsConstructor
+@Service
 public class EmailService {
 
     private final JavaMailSender javaMailSender;
     private final RedisUtil redisUtil;
-
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
     private static final String senderEmail = "jj@naver.com";
 
     // 인증 코드 생성
@@ -63,7 +59,6 @@ public class EmailService {
                 .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
                 .toString();
     }
-
 
     // 이메일 내용 초기화
     private String setContext(String code) {
@@ -144,8 +139,7 @@ public class EmailService {
 
         // 사용자 존재하면 enabled 설정 후 저장
         User user = optionalUser.get();
-        user.setRoleType(RoleType.USER);
-//        user.setEnabled(true);
+        user.updateRole(RoleType.USER);
 
         try {
             userRepository.save(user);
@@ -158,6 +152,4 @@ public class EmailService {
         // 성공적으로 활성화 처리된 경우
         return true;
     }
-
-
 }

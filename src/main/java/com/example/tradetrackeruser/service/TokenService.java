@@ -1,19 +1,14 @@
 package com.example.tradetrackeruser.service;
 
-import com.example.tradetrackeruser.security.JWTUtil;
 import com.example.tradetrackeruser.util.RedisUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+@RequiredArgsConstructor
 @Service
 public class TokenService {
 
     private final RedisUtil redisUtil;
-
-    @Autowired
-    public TokenService(RedisUtil redisUtil) {
-        this.redisUtil = redisUtil;
-    }
 
     // refresh token을 Redis에 저장
     public void saveRefreshTokenToRedis(String email, String refreshToken, long duration) {
@@ -41,6 +36,4 @@ public class TokenService {
         // Redis에서 refresh token 삭제
         redisUtil.deleteData(key);
     }
-
-
 }

@@ -35,7 +35,7 @@ public class EmailController {
     @PostMapping("/verify")
     public ApiResponse<String> verify(@RequestBody EmailDto emailDto) {
         log.info("EmailController.verify()");
-        boolean isVerify = emailService.verifyEmailCode(emailDto);
+        emailService.verifyEmailCode(emailDto);
 
         return ApiResponse.ok("인증이 완료되었습니다.");
     }
