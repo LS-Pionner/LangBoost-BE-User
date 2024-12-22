@@ -81,5 +81,4 @@ public class AuthController {
 
         return ApiResponse.ok("재발급 성공");
     }
-
 }
