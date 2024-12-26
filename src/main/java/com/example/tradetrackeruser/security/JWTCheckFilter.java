@@ -14,10 +14,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
-
-
-
-
 import com.example.tradetrackeruser.entity.User;
 
 import java.io.IOException;
@@ -35,6 +31,13 @@ public class JWTCheckFilter extends BasicAuthenticationFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         String bearer = request.getHeader(HttpHeaders.AUTHORIZATION);
+
+        // 아래 경로에 대해서는 필터 X
+        if (request.getRequestURI().equals("/api/v1/register") || request.getRequestURI().equals("/api/v1/authenticate")
+                || request.getRequestURI().equals("/api/v1/login") || request.getRequestURI().equals("/api/v1/email-check")) {
+            chain.doFilter(request, response);
+            return;
+        }
 
         // 토큰 존재 x
         if(bearer == null || !bearer.startsWith("Bearer ")){

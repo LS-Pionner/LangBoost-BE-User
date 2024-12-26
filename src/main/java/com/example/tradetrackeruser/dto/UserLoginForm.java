@@ -1,16 +1,11 @@
 package com.example.tradetrackeruser.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Data
-@AllArgsConstructor
+@Getter
 @NoArgsConstructor
-@Builder
 public class UserLoginForm {
-
     private String username;
     private String password;
     private String refreshToken;
