@@ -21,9 +21,11 @@ WORKDIR /app
 # 변수 정의
 ARG JAR_FILE=build/libs/UserLogic-0.0.1-SNAPSHOT.jar
 ARG YML_FILE=src/main/resources/application.yml
+ARG DEV_YML_FILE=src/main/resources/application-dev.yml
 
 COPY --from=build /app/${JAR_FILE} app.jar
 COPY ${YML_FILE} /application.yml
+COPY ${DEV_YML_FILE} /application-dev.yml
 
 # 시간 동기화
 RUN apk add --no-cache tzdata \
