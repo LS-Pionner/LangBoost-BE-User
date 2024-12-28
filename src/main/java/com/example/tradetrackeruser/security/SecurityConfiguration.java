@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -44,7 +45,7 @@ public class SecurityConfiguration {
                 )
                 .authorizeHttpRequests(auth ->
                         auth
-                                .requestMatchers("/api/v1/register", "/api/v1/authenticate", "/api/v1/login", "/api/v1/email-check").permitAll() // 이 경로들은 인증 없이 접근 가능
+                                .requestMatchers("/api/v1/auth/register", "/api/v1/auth/authenticate", "/api/v1/auth/login", "/api/v1/auth/email-check").permitAll() // 이 경로들은 인증 없이 접근 가능
                                 .requestMatchers("/api/v1/auth/logout").authenticated() // 로그아웃은 권한에 상관없이 접근 가능
                                 .requestMatchers("/api/v1/**").hasAnyRole(RoleType.USER.name(), RoleType.ADMIN.name()) // 나머지 모든 요청은 USER 권한 필요
                                 .anyRequest().permitAll()
@@ -61,6 +62,12 @@ public class SecurityConfiguration {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
+
+    // 비밀번호 해시 방식 적용
+//    @Bean
+//    public static PasswordEncoder passwordEncoder() {
+//        return new BCryptPasswordEncoder();
+//    }
 
     // 원본 사용 (비밀번호 인고딩 x)
     @Bean

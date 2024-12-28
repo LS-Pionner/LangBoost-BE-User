@@ -17,7 +17,7 @@ import com.example.api.response.ApiResponse;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/email")
+@RequestMapping("/api/v1/auth/email")
 public class EmailController {
     private final EmailService emailService;
 
