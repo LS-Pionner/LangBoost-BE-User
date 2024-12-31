@@ -67,6 +67,10 @@ dependencies {
     // Actuatotor
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
+    //AWS Parameter Store
+    implementation platform("io.awspring.cloud:spring-cloud-aws-dependencies:3.1.0")
+    implementation 'io.awspring.cloud:spring-cloud-aws-starter-parameter-store'
+
     // github에서 api-response 라이브러리 가져옴
     implementation 'com.practice:api-response-library:1.0.1'
 
