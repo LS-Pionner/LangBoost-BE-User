@@ -70,6 +70,8 @@ dependencies {
     // github에서 api-response 라이브러리 가져옴
     implementation 'com.practice:api-response-library:1.0.1'
 
+    // AOP
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
