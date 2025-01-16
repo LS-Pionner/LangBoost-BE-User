@@ -54,28 +54,55 @@ public class LoggingAspect {
     @Around(value = "cut()")
     public Object aroundLog(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         Method method = getMethod(proceedingJoinPoint);
-        log.info("==== method name: {} ====", method.getName());
-
         // 파라미터 받아오기
         Object[] args = proceedingJoinPoint.getArgs();
-        if (args.length <= 0) log.info("no parameter");
 
-        for (Object arg: args) {
-            log.info("parameter type: {}", arg.getClass().getSimpleName());
-            log.info("parameter value: {}", arg);
-        }
+        // 요청 로그
+        logRequest(method, args);
 
-        // proceed() 메서드로 실제 메서드 실행
-        Object returnObj = proceedingJoinPoint.proceed();
-
-        if (returnObj != null) {
-            log.info("return type: {}", returnObj.getClass().getSimpleName());
-            log.info("return value: {}\n", returnObj);
-        } else {
-            log.info("return value: null\n");
+        Object returnObj = null;
+        try {
+            // proceed() 메서드로 실제 메서드 실행
+            returnObj = proceedingJoinPoint.proceed();
+            // 응답 로그
+            logResponse(method, returnObj);
+        } catch (Throwable throwable) {
+            // 에러 로그
+            logError(method, throwable);
+            throw throwable;    // 예외를 다시 던져서 호출자에게 전달
         }
 
         return returnObj;
+    }
+
+    private void logRequest(Method method, Object[] args) {
+        log.info("==== Request method: {} ====", method.getName());
+
+        if (args.length == 0) {
+            log.info("no parameter");
+        } else {
+            for (Object arg: args) {
+                log.info("Parameter type: {}", arg.getClass().getSimpleName());
+                log.info("Parameter value: {}", arg);
+            }
+        }
+    }
+
+    private void logResponse(Method method, Object returnObj) {
+        log.info("==== Response method: {} ====", method.getName());
+
+        if (returnObj != null) {
+            log.info("Return type: {}", returnObj.getClass().getSimpleName());
+            log.info("Return value: {}\n", returnObj);
+        } else {
+            log.info("Return value: null\n");
+        }
+    }
+
+    private void logError(Method method, Throwable throwable) {
+        String errorMessage = throwable.getMessage();
+        log.error("==== Error method: {} ====", method.getName());
+        log.error("Error message: {}", errorMessage);
     }
 
     // JoinPoint로 메서드 정보 가져오기
