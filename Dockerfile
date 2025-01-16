@@ -21,11 +21,14 @@ WORKDIR /app
 # 변수 정의
 ARG JAR_FILE=build/libs/UserLogic-0.0.1-SNAPSHOT.jar
 ARG YML_FILE=src/main/resources/application.yml
-ARG DEV_YML_FILE=src/main/resources/application-dev.yml
+ARG PROD_YML_FILE=src/main/resources/application-prod.yml
+
+# 로그 파일 디렉터리 생성
+VOLUME /path/in/container/logs
 
 COPY --from=build /app/${JAR_FILE} app.jar
 COPY ${YML_FILE} /application.yml
-COPY ${DEV_YML_FILE} /application-dev.yml
+COPY ${PROD_YML_FILE} /application-prod.yml
 
 # 시간 동기화
 RUN apk add --no-cache tzdata \
@@ -34,4 +37,4 @@ RUN apk add --no-cache tzdata \
 
 EXPOSE 8081
 
-ENTRYPOINT ["java", "-jar", "-Dspring.config.location=file:/application.yml", "-Dspring.profiles.active=dev", "/app/app.jar"]
+ENTRYPOINT ["java", "-jar", "-Dspring.config.location=file:/application.yml", "-Dspring.profiles.active=prod", "/app/app.jar"]
