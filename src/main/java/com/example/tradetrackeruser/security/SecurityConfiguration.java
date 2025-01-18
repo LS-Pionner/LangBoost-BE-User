@@ -26,6 +26,8 @@ public class SecurityConfiguration {
 
     private final UserService userService;
 
+    private final JWTUtil jwtUtil;
+
     private final CustomAuthenticationEntryPoint authenticationEntryPoint;
 
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
@@ -35,7 +37,7 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
-        JWTCheckFilter checkFilter = new JWTCheckFilter(authenticationManager, userService);
+        JWTCheckFilter checkFilter = new JWTCheckFilter(authenticationManager, userService, jwtUtil);
 
         http
                 .csrf(csrf -> csrf.disable()) // CSRF 비활성화

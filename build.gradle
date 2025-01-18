@@ -15,7 +15,7 @@ java {
 
 repositories {
     mavenCentral()
-    //	mavenLocal()
+    mavenLocal()
     maven {
         url = uri("https://maven.pkg.github.com/LS-Pionner/LangBoost-BE-api-response-library")
         credentials {
@@ -71,7 +71,7 @@ dependencies {
     implementation 'io.awspring.cloud:spring-cloud-aws-starter-parameter-store'
 
     // github에서 api-response 라이브러리 가져옴
-    implementation 'com.practice:api-response-library:1.0.1'
+    implementation 'com.practice:api-response-library:1.0.2'
 
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
