@@ -11,11 +11,11 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Configuration
 public class CorsConfig {
 
-    @Value("${frontend.url}")
-    private String frontendUrl;
-
-    @Value("${gateway.url}")
-    private String gatewayUrl;
+//    @Value("${frontend.url}")
+//    private String frontendUrl;
+//
+//    @Value("${backend.gateway.url}")
+//    private String gatewayUrl;
 
 
     @Bean
@@ -24,8 +24,8 @@ public class CorsConfig {
         CorsConfiguration corsConfig = new CorsConfiguration();
 
         // 허용된 Origin 추가
-        corsConfig.addAllowedOriginPattern(frontendUrl);
-        corsConfig.addAllowedOriginPattern(gatewayUrl);
+        corsConfig.addAllowedOriginPattern("http://localhost:3000");
+        corsConfig.addAllowedOriginPattern("http://localhost:8080");
 
         // 요청 해더 허용
         corsConfig.addAllowedMethod("*");

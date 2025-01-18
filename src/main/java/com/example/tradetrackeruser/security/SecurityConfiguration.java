@@ -64,14 +64,14 @@ public class SecurityConfiguration {
     }
 
     // 비밀번호 해시 방식 적용
-//    @Bean
-//    public static PasswordEncoder passwordEncoder() {
-//        return new BCryptPasswordEncoder();
-//    }
-
-    // 원본 사용 (비밀번호 인고딩 x)
     @Bean
     public static PasswordEncoder passwordEncoder() {
-        return NoOpPasswordEncoder.getInstance(); // 비밀번호 인코딩 방식을 NoOp으로 설정
+        return new BCryptPasswordEncoder();
     }
+
+    // 원본 사용 (비밀번호 인고딩 x)
+//    @Bean
+//    public static PasswordEncoder passwordEncoder() {
+//        return NoOpPasswordEncoder.getInstance(); // 비밀번호 인코딩 방식을 NoOp으로 설정
+//    }
 }

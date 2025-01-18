@@ -41,7 +41,6 @@ dependencies {
     implementation("com.auth0:java-jwt:3.16.0")
     implementation 'org.projectlombok:lombok:1.18.22'// oauth0
 
-
     // 로그 라이브러리 사용을 위해 추가
     annotationProcessor("org.projectlombok:lombok")
     compileOnly("org.projectlombok:lombok")
