@@ -21,13 +21,13 @@ WORKDIR /app
 # 변수 정의
 ARG JAR_FILE=build/libs/UserLogic-0.0.1-SNAPSHOT.jar
 ARG YML_FILE=src/main/resources/application.yml
-#ARG DEV_YML_FILE=src/main/resources/application-dev.yml
-ARG PROD_YML_FILE=src/main/resources/application-prod.yml
+ARG DEV_YML_FILE=src/main/resources/application-docker.yml
+#ARG PROD_YML_FILE=src/main/resources/application-prod.yml
 
 COPY --from=build /app/${JAR_FILE} app.jar
 COPY ${YML_FILE} /application.yml
-#COPY ${DEV_YML_FILE} /application-dev.yml
-COPY ${PROD_YML_FILE} /application-prod.yml
+COPY ${DEV_YML_FILE} /application-docker.yml
+#COPY ${PROD_YML_FILE} /application-prod.yml
 
 # 시간 동기화
 RUN apk add --no-cache tzdata \
@@ -36,6 +36,7 @@ RUN apk add --no-cache tzdata \
 
 EXPOSE 8081
 
+# 로컬용
+ENTRYPOINT ["java", "-jar", "-Dspring.config.location=file:/application.yml", "-Dspring.profiles.active=docker", "/app/app.jar"]
 # production 프로파일을 활성화하여 실행
-ENTRYPOINT ["java", "-jar", "-Dspring.config.location=file:/application-prod.yml", "-Dspring.profiles.active=prod", "/app/app.jar"]
-#ENTRYPOINT ["java", "-jar", "-Dspring.config.location=file:/application.yml", "-Dspring.profiles.active=dev", "/app/app.jar"]
+#ENTRYPOINT ["java", "-jar", "-Dspring.config.location=file:/application-prod.yml", "-Dspring.profiles.active=prod", "/app/app.jar"]
