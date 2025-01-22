@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/auth")
 public class AuthController {
 
     private final UserService userService;
@@ -33,7 +33,7 @@ public class AuthController {
     }
 
     // 로그아웃
-    @PostMapping("/auth/logout")
+    @PostMapping("/logout")
     public ApiResponse<String> logout(HttpServletResponse response) {
         userService.logoutUser();
         response.addHeader("Set-Cookie", "RefreshToken=; Max-Age=0; path=/; SameSite=Lax"); // 브라우저에 저장된 쿠키 삭제
@@ -69,7 +69,7 @@ public class AuthController {
     }
 
     // 토큰 재발급
-    @PostMapping("/auth/reissue")
+    @PostMapping("/reissue")
     public ApiResponse<String> reissue(HttpServletRequest request, HttpServletResponse response) {
         String refreshToken = request.getHeader("RefreshToken");
 

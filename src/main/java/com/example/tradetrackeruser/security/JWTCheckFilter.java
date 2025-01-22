@@ -33,8 +33,8 @@ public class JWTCheckFilter extends BasicAuthenticationFilter {
         String bearer = request.getHeader(HttpHeaders.AUTHORIZATION);
 
         // 아래 경로에 대해서는 필터 X
-        if (request.getRequestURI().equals("/api/v1/register") || request.getRequestURI().equals("/api/v1/authenticate")
-                || request.getRequestURI().equals("/api/v1/login") || request.getRequestURI().equals("/api/v1/email-check")) {
+        if (request.getRequestURI().equals("/api/v1/auth/register") || request.getRequestURI().equals("/api/v1/auth/authenticate")
+                || request.getRequestURI().equals("/api/v1/auth/login") || request.getRequestURI().equals("/api/v1/auth/email-check")) {
             chain.doFilter(request, response);
             return;
         }
