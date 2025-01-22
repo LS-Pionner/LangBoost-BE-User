@@ -15,7 +15,6 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import org.springframework.web.cors.CorsConfigurationSource;
 
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -29,16 +28,12 @@ public class SecurityConfiguration {
 
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
-    private final CorsConfigurationSource corsConfigurationSource;
-
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
         JWTCheckFilter checkFilter = new JWTCheckFilter(authenticationManager, userService);
 
         http
                 .csrf(csrf -> csrf.disable()) // CSRF 비활성화
-                .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 세션 관리 정책 설정 (세션 생성 x)
                 )
