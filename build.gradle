@@ -73,6 +73,11 @@ dependencies {
     // github에서 api-response 라이브러리 가져옴
     implementation 'com.practice:api-response-library:1.0.2'
 
+    // AOP
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
+
+    // logstash가 logback을 이해할 수 있도록 인코딩하기 위함
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'

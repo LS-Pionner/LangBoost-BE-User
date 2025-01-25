@@ -93,6 +93,8 @@ public class UserService implements UserDetailsService {
     }
 
     public UserInfoAndTokenDto loginUser(UserLoginForm loginForm) {
+        loadUserByUsername(loginForm.getUsername());
+
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginForm.getUsername(), loginForm.getPassword());
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 

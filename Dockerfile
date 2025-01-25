@@ -24,6 +24,9 @@ ARG YML_FILE=src/main/resources/application.yml
 ARG DEV_YML_FILE=src/main/resources/application-docker.yml
 #ARG PROD_YML_FILE=src/main/resources/application-prod.yml
 
+# 로그 파일 디렉터리 생성
+# VOLUME /path/in/container/logs
+
 COPY --from=build /app/${JAR_FILE} app.jar
 COPY ${YML_FILE} /application.yml
 COPY ${DEV_YML_FILE} /application-docker.yml
