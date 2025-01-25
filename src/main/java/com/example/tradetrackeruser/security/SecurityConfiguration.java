@@ -11,7 +11,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
@@ -24,13 +24,15 @@ public class SecurityConfiguration {
 
     private final UserService userService;
 
+    private final JWTUtil jwtUtil;
+
     private final CustomAuthenticationEntryPoint authenticationEntryPoint;
 
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
-        JWTCheckFilter checkFilter = new JWTCheckFilter(authenticationManager, userService);
+        JWTCheckFilter checkFilter = new JWTCheckFilter(authenticationManager, userService, jwtUtil);
 
         http
                 .csrf(csrf -> csrf.disable()) // CSRF 비활성화
@@ -57,9 +59,15 @@ public class SecurityConfiguration {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
-    // 원본 사용 (비밀번호 인고딩 x)
+    // 비밀번호 해시 방식 적용
     @Bean
     public static PasswordEncoder passwordEncoder() {
-        return NoOpPasswordEncoder.getInstance(); // 비밀번호 인코딩 방식을 NoOp으로 설정
+        return new BCryptPasswordEncoder();
     }
+
+    // 원본 사용 (비밀번호 인고딩 x)
+//    @Bean
+//    public static PasswordEncoder passwordEncoder() {
+//        return NoOpPasswordEncoder.getInstance(); // 비밀번호 인코딩 방식을 NoOp으로 설정
+//    }
 }

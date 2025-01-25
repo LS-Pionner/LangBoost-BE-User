@@ -8,7 +8,8 @@ build/
 ### Enviornment Variable ###
 application.properties
 application.yml
-application-local.yml
+application-dev.yml
+application-docker.yml
 application-prod.yml
 gradle.properties
 

@@ -30,6 +30,8 @@ import java.util.Optional;
 public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
 
+    private final JWTUtil jwtUtil;
+
     private final PasswordEncoder passwordEncoder;
 
     private final TokenService tokenService;
@@ -99,9 +101,9 @@ public class UserService implements UserDetailsService {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         User user = (User) authentication.getPrincipal();
 
-        String accessToken = JWTUtil.makeAccessToken(user);
-        String refreshToken = JWTUtil.makeRefreshToken(user);
-        tokenService.saveRefreshTokenToRedis(user.getEmail(), refreshToken, JWTUtil.REFRESH_TIME);
+        String accessToken = jwtUtil.makeAccessToken(user);
+        String refreshToken = jwtUtil.makeRefreshToken(user);
+        tokenService.saveRefreshTokenToRedis(user.getEmail(), refreshToken, jwtUtil.getRefreshTime());
 
         TokenDto tokenDto = new TokenDto(accessToken, refreshToken);
         UserInfoDto userInfoDto = new UserInfoDto(user.getId(), user.getEmail(), user.getUsername(), user.getPassword(), user.isEnabled());
@@ -110,7 +112,7 @@ public class UserService implements UserDetailsService {
     }
 
     public TokenDto reissueToken(String refreshToken) {
-        VerifyResult verifyResult = JWTUtil.verify(refreshToken);
+        VerifyResult verifyResult = jwtUtil.verify(refreshToken);
 
         // 전달받은 refresh 토큰이 유효하지 않음
         if (!verifyResult.isSuccess()) {
@@ -124,9 +126,9 @@ public class UserService implements UserDetailsService {
             throw new CustomException(ErrorCode.NOT_MATCHED_REFRESH_TOKEN);
         }
 
-        String reissuedAccessToken = JWTUtil.makeAccessToken(user);
-        String reissuedRefreshToken = JWTUtil.makeRefreshToken(user);
-        tokenService.saveRefreshTokenToRedis(user.getEmail(), reissuedRefreshToken, JWTUtil.REFRESH_TIME);
+        String reissuedAccessToken = jwtUtil.makeAccessToken(user);
+        String reissuedRefreshToken = jwtUtil.makeRefreshToken(user);
+        tokenService.saveRefreshTokenToRedis(user.getEmail(), reissuedRefreshToken, jwtUtil.getRefreshTime());
 
         return new TokenDto(reissuedAccessToken, reissuedRefreshToken);
     }
