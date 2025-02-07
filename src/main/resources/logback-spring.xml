@@ -1,0 +1,20 @@
+<configuration>
+<appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+    <destination>localhost:5000</destination> <!-- Logstash의 TCP 포트 -->
+    <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+    </encoder>
+</appender>
+
+<logger name="INFO_LOG" level="DEBUG">
+    <appender-ref ref="LOGSTASH"/>
+</logger>
+
+<!-- AOP에서 사용할 로거 설정 -->
+<logger name="com.example.tradetrackeruser" level="DEBUG">
+    <appender-ref ref="LOGSTASH"/>
+</logger>
+
+<root level="INFO">
+    <appender-ref ref="LOGSTASH"/>
+</root>
+</configuration>

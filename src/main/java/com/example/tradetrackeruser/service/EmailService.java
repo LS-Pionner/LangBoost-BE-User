@@ -47,7 +47,7 @@ public class EmailService {
 //                .toString();
 //    }
 
-    // 무작위 6자리 숫자
+    // 무작위 6자리 숫자로 검증
     private static String createCode() {
         int leftLimit = 48; // number '0'
         int rightLimit = 57; // number '9'

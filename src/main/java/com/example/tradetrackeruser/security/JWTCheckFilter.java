@@ -21,11 +21,13 @@ import java.io.IOException;
 @Slf4j
 public class JWTCheckFilter extends BasicAuthenticationFilter {
 
-    private UserService userService;
+    private final UserService userService;
+    private final JWTUtil jwtUtil;
 
-    public JWTCheckFilter(AuthenticationManager authenticationManager, UserService userService) {
+    public JWTCheckFilter(AuthenticationManager authenticationManager, UserService userService, JWTUtil jwtUtil) {
         super(authenticationManager);
         this.userService = userService;
+        this.jwtUtil = jwtUtil;
     }
 
     @Override
@@ -50,7 +52,7 @@ public class JWTCheckFilter extends BasicAuthenticationFilter {
         String token = bearer.substring("Bearer ".length());
 
         // 토큰 검증
-        VerifyResult result = JWTUtil.verify(token);
+        VerifyResult result = jwtUtil.verify(token);
 
         if(result.isSuccess()){
             // 유저 검증
